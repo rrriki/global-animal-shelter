@@ -13,6 +13,7 @@ export class Configuration {
             uri: process.env.MONGO_URI,
             options: {
                 useNewUrlParser: true,
+                useCreateIndex: true,
                 useFindAndModify: false,
             },
         };
