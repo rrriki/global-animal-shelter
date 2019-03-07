@@ -1,5 +1,5 @@
-import {ApiModelProperty, ApiModelPropertyOptional} from '@nestjs/swagger';
-import {IsNotEmpty, IsBoolean, Length} from 'class-validator';
+import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsBoolean, Length } from 'class-validator';
 
 export class CreatePetDTO {
     @ApiModelProperty()
