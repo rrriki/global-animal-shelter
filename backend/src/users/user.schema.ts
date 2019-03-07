@@ -36,7 +36,7 @@ UserSchema.pre<User>('save', async function(next) {
 // Additional method to validate the entered password against the stored hash
 UserSchema.methods.isValidPassword = async function(password) {
     try {
-        return bcrypt.compare(password, this.password);
+        return await bcrypt.compare(password, this.password);
     } catch (e) {
         logger.error(e);
         return e;

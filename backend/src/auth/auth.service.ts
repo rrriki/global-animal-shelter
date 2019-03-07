@@ -1,11 +1,12 @@
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
-import { UserService } from '../users/user.service';
 import { LoginAttemptDTO } from './loginAttempt.dto';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { UserService } from '../users/user.service';
 
 const logger = new Logger('AuthService');
 
+@Injectable()
 export class AuthService {
     constructor (
         private readonly userService: UserService,
@@ -17,16 +18,16 @@ export class AuthService {
      * @param loginAttempt
      */
     async validateUserByPassword (loginAttempt: LoginAttemptDTO) {
-        // TODO: Find out why userService is undefined. Check module imports/exports
         const user = await this.userService.findUserByEmail(loginAttempt.email);
+
         if (!user) {
-            return null;
+            return { message: 'User not found', token: null };
         }
         // Check the supplied password against the hash stored for this email address
         if (await user.isValidPassword(loginAttempt.password)) {
-            return this.createJwtPayload(user);
+            return { message: 'Login successful', ...this.createJwtPayload(user) };
         } else {
-            throw new UnauthorizedException();
+            return { message: 'Wrong password', token: null };
         }
     }
 
