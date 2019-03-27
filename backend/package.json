@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "0.0.0",
-  "description": "global animal shelter backend",
+  "description": "Global animal shelter - backend",
   "author": "Ricardo R. Rincón",
   "license": "MIT",
   "scripts": {

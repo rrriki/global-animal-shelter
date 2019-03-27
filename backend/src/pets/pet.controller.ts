@@ -34,6 +34,9 @@ export class PetController {
     public async findPetById (@Response() res, @Param('id') id: string): Promise<Pet> {
         try {
             const pet = await this.petService.findPetById(id);
+            if (!pet) {
+                return res.status(HttpStatus.NOT_FOUND).json({ message: 'Pet not found' });
+            }
             return res.status(HttpStatus.OK).json(pet);
         } catch (e) {
             throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
