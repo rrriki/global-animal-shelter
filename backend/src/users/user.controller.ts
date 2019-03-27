@@ -1,7 +1,8 @@
 import { Controller, Body, Post, Get, Response, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { ApiResponse } from '@nestjs/swagger';
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateUserDto } from './createUser.dto';
+import { CreateUserDTO } from './createUser.dto';
 import { UserService } from './user.service';
 
 @ApiUseTags('Users')
@@ -11,7 +12,9 @@ export class UserController {
     constructor (private userService: UserService) { }
 
     @Post()
-    async createUser (@Response() res, @Body() user: CreateUserDto) {
+    @ApiResponse({ status: HttpStatus.OK, description: 'User has been successfully created' })
+    @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating user' })
+    async createUser (@Response() res, @Body() user: CreateUserDTO) {
         try {
             const newUser = await this.userService.createUser(user);
             return res.status(HttpStatus.OK).json(newUser);
@@ -22,7 +25,7 @@ export class UserController {
 
     @Get('test')
     @UseGuards(AuthGuard())
-    async testAuth() {
-        return { message: 'Auth works!'};
+    async testAuth () {
+        return { message: 'Auth works!' };
     }
 }

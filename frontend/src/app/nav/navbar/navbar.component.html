@@ -1,0 +1,45 @@
+<div class="my-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border">
+
+        <!-- Brand -->
+        <a href="#" class="navbar-brand">
+            <img src="assets/images/logo.png" alt="Reveware" height="30" width="30">
+            {{title}}
+        </a>
+        <!-- Nav Toggler -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#toggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Nav Options -->
+        <div class="collapse navbar-collapse" id="toggler">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/pets']">All Pets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/pets/found']">Found a Pet</a>
+                </li>
+                <!-- Dropdown menu -->
+                <div class="nav-item dropdown" data-toggle="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" [routerLink]="['/pets/lost']">Lost a Pet</a>
+                    <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">Dogs</a>
+                        <a href="#" class="dropdown-item">Cats</a>
+                    </div>
+                </div>
+            </ul>
+            <!-- Search -->
+            <form class="form-inline">
+                <input class="form-control mr-2" type="search" placeholder="Search pets..." name="search">
+                <button class="btn btn-outline-dark" type="submit">Search</button>
+            </form>
+            <!-- Login Info -->
+            <div class="navbar-header ml-3">
+                <a>
+                    <fa-icon [icon]="faUser" size="lg"></fa-icon>
+                    Login
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
