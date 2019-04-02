@@ -35,10 +35,12 @@
             </form>
             <!-- Login Info -->
             <div class="navbar-header ml-3">
-                <a>
-                    <fa-icon [icon]="faUser" size="lg"></fa-icon>
+                <a *ngIf="!auth.isAuthenticated()" [routerLink]="['/users/login']">
                     Login
+                    <fa-icon [icon]="faUser" size="lg"></fa-icon>
                 </a>
+
+                <a *ngIf="auth.isAuthenticated()"> {{auth.currentUser.firstName}}</a>
             </div>
         </div>
     </nav>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
@@ -14,8 +14,8 @@ import { PetListResolver } from './pets/pet-list/pet-list.resolver';
 import { PetDetailComponent } from './pets/pet-detail/pet-detail.component';
 import { PetDetailResolver } from './pets/pet-detail/pet-detail.resolver';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
-
-
+import { AuthService } from './users/auth.service';
+import { AuthInterceptor } from './users/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -31,7 +31,17 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
         HttpClientModule,
         FontAwesomeModule
     ],
-    providers: [PetService, PetListResolver, PetDetailResolver],
+    providers: [
+        AuthService,
+        PetService,
+        PetListResolver,
+        PetDetailResolver,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
