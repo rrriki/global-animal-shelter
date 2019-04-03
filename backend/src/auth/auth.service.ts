@@ -21,13 +21,13 @@ export class AuthService {
         const user = await this.userService.findUserByEmail(loginAttempt.email);
 
         if (!user) {
-            return { message: 'User not found', token: null };
+            return { message: 'User not found', data: null };
         }
         // Check the supplied password against the hash stored for this email address
         if (await user.isValidPassword(loginAttempt.password)) {
-            return { message: 'Login successful', ...this.createJwtPayload(user) };
+            return { message: 'Login successful', data: { ...this.createJwtPayload(user), user } };
         } else {
-            return { message: 'Wrong password', token: null };
+            return { message: 'Wrong password', data: null };
         }
     }
 

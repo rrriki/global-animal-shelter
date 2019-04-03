@@ -23,7 +23,7 @@ export class UserController {
         }
     }
 
-    @Get('test')
+    @Get('locked')
     @UseGuards(AuthGuard())
     async testAuth () {
         return { message: 'Auth works!' };

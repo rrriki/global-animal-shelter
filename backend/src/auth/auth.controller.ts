@@ -10,11 +10,11 @@ export class AuthController {
 
     @Post()
     async login (@Response() res, @Body() loginAttempt: LoginAttemptDTO) {
-        const login = await this.authService.validateUserByPassword(loginAttempt);
-        if (login.token) {
-            res.status(HttpStatus.OK).json(login);
+        const result = await this.authService.validateUserByPassword(loginAttempt);
+        if (result.data) {
+            res.status(HttpStatus.OK).json(result);
         } else {
-            res.status(HttpStatus.UNAUTHORIZED).json(login);
+            res.status(HttpStatus.UNAUTHORIZED).json(result);
         }
     }
 }
