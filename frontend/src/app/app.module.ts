@@ -23,7 +23,7 @@ import { AuthInterceptor } from './users/auth.interceptor';
         NavbarComponent,
         PetListComponent,
         PetDetailComponent,
-        NotFoundComponent
+        NotFoundComponent,
     ],
     imports: [
         BrowserModule,

@@ -35,8 +35,6 @@ export class AuthService {
         const token = data.token;
         const expiresAt = moment().add(data.expires, 'seconds');
 
-        console.log('service', this.currentUser);
-
         localStorage.setItem('token_id', token);
         localStorage.setItem('token_expiration', JSON.stringify(expiresAt.valueOf()));
     }

@@ -10,5 +10,6 @@ export const appRoutes: Routes = [
     { path: 'pets', component: PetListComponent, resolve: {petList: PetListResolver} },
     { path: 'users', loadChildren: './users/user.module#UserModule' },
     { path: '404', component: NotFoundComponent},
-    { path: '', redirectTo: '/pets', pathMatch: 'full' }
+    { path: '', redirectTo: '/pets', pathMatch: 'full' },
+    { path: '**', redirectTo: '404' }
 ];
