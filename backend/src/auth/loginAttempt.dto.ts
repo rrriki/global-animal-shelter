@@ -7,6 +7,7 @@ export class LoginAttemptDTO {
     @IsEmail()
     email: string;
 
+    @ApiModelProperty()
     @IsNotEmpty()
     @IsString()
     password: string;
