@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
     providedIn: 'root'
@@ -9,13 +10,33 @@ export class AuthService {
 
     currentUser;
 
-    constructor (private httpClient: HttpClient) { }
+    constructor (private httpClient: HttpClient, private jwtHelper: JwtHelperService) {
+        // Validate if a the user is loggedIn
+        const token = AuthService.getToken();
+        if (token) {
+            const { user } = this.jwtHelper.decodeToken(token);
+
+            console.log('decoded user', user);
+            this.currentUser = user;
+
+        } else {
+            this.currentUser = {};
+        }
+
+    }
+
+    static getToken () {
+        return localStorage.getItem('jwt_token');
+    }
 
     isAuthenticated (): boolean {
-        const isValidUser = !!this.currentUser;
-        const isValidToken = moment().isBefore(this.getTokenExpiration());
-
-        return isValidUser && isValidToken;
+        const token = AuthService.getToken();
+        if (!token) {
+            return false;
+        }
+        const decoded = this.jwtHelper.decodeToken(token);
+        const expiresIn = moment.unix(decoded.exp);
+        return moment().isBefore(expiresIn);
     }
 
     login (email: string, password: string) {
@@ -24,23 +45,15 @@ export class AuthService {
 
     logout () {
         this.currentUser = null;
-        localStorage.removeItem('token_id');
-        localStorage.removeItem('token_expiration');
+        localStorage.removeItem('jwt_token');
+
     }
 
-    setSession (authResults) {
-        const { data } = authResults;
-
-        this.currentUser = data.user;
-        const token = data.token;
-        const expiresAt = moment().add(data.expires, 'seconds');
-
-        localStorage.setItem('token_id', token);
-        localStorage.setItem('token_expiration', JSON.stringify(expiresAt.valueOf()));
-    }
-
-    private getTokenExpiration () {
-        const expiration = localStorage.getItem('token_expiration');
-        return moment(JSON.parse(expiration));
+    setSession ({data}) {
+        const { token} = data;
+        console.log(token);
+        const { user } = this.jwtHelper.decodeToken(token);
+        this.currentUser = user;
+        localStorage.setItem('jwt_token', token);
     }
 }
