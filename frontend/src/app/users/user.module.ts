@@ -15,7 +15,7 @@ import { LockedComponent } from './locked/locked.component';
         CommonModule,
         FormsModule,
         FontAwesomeModule,
-        RouterModule.forChild(userRoutes)
+        RouterModule.forChild(userRoutes),
     ],
     providers: [UserService]
 })

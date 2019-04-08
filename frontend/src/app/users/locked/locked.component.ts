@@ -15,7 +15,7 @@ export class LockedComponent implements OnInit {
     ngOnInit () {
         this.httpClient.get(`/api/users/locked`)
             .subscribe(
-                (res: any) => { this.response = res.message;},
+                (res: any) => { this.response = res.message; },
                 (err) => {console.log(err); },
                 () => {console.log('final'); }
             );

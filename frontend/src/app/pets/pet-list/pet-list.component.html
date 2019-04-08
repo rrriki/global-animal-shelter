@@ -1,23 +1,28 @@
 <!-- https://www.petfinder.com -->
 
-<div class="row">
-    <div class="card-deck">
-        <div class="card" *ngFor="let pet of petList">
+<div class="card-deck">
+
+    <div class="col-md-4 mb-4" *ngFor="let pet of petList">
+
+        <div class="card h-100">
             <div class="card-header text-center">{{pet.isLost ? "LOST" : "FOUND"}}</div>
 
             <!-- https://getbootstrap.com/docs/4.0/components/carousel/ -->
-            <img *ngIf="pet.photos.length > 0" class="card-img-top" src="{{pet.photos[0]}}" alt="{{pet.description}}">
+            <img *ngIf="pet.photos.length > 0" class="card-img-top" src="{{pet.photos[0]}}"
+                 alt="{{pet.description}}">
             <div class="card-body">
                 <h5 class="card-title">{{pet.name}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{pet.type}}</h6>
-                <p class="card-text">{{pet.description}}</p>
+                <p class="card-text text-truncate">{{pet.description}}</p>
             </div>
             <div class="card-footer text-center">
-                <a href="#" class="card-link">View Details</a>
-                <a href="#" class="card-link">Add to Watch</a>
+                <a [routerLink]="['/pets/'+pet.id]" class="card-link">View Details</a>
+                <a href="#" class="card-link">Follow</a>
             </div>
         </div>
-
     </div>
 </div>
+
+
+
 

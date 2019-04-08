@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { LoginAttemptDTO } from './loginAttempt.dto';
 import { UserService } from '../users/user.service';
+import { Configuration } from '../configuration';
 
 const logger = new Logger('AuthService');
 
@@ -25,7 +26,7 @@ export class AuthService {
         }
         // Check the supplied password against the hash stored for this email address
         if (await user.isValidPassword(loginAttempt.password)) {
-            return { message: 'Login successful', data: { ...this.createJwtPayload(user), user } };
+            return { message: 'Login successful', data: { token: this.signTokenForPayload(user) } };
         } else {
             return { message: 'Wrong password', data: null };
         }
@@ -36,10 +37,10 @@ export class AuthService {
      * @param payload
      */
     async validateUserByJwt (payload: JwtPayload) {
-        const user = await this.userService.findUserByEmail(payload.email);
+        const user = await this.userService.findUserByEmail(payload.user.email);
 
         if (user) {
-            return this.createJwtPayload(user);
+            return this.signTokenForPayload(user);
         } else {
             throw new UnauthorizedException();
         }
@@ -49,16 +50,16 @@ export class AuthService {
      * Add the user’s email address to the payload, and sign it using the JwtService and JWT_SECRET
      * @param user
      */
-    createJwtPayload (user) {
+    signTokenForPayload (user) {
+        // remove password
+        delete user.password;
         const data: JwtPayload = {
-            email: user.email,
+            user,
         };
 
-        const jwt = this.jwtService.sign(data);
+        const expiresIn = Configuration.getJwtExpirationSeconds();
 
-        return {
-            expires: 3600,
-            token: jwt,
-        };
+        // Return signed JWT token.
+        return this.jwtService.sign(data, { expiresIn });
     }
 }

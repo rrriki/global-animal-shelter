@@ -24,18 +24,14 @@ export class UserLoginComponent {
     login (formValues) {
         this.auth.login(formValues.email, formValues.password)
             .subscribe(
-                (authResults) => {
-                    this.auth.setSession(authResults);
-                },
-                (error) => {
-                    console.log('An error occurred logging in:', error);
-                },
                 () => {
                     console.log('User is logged in:', this.auth.currentUser);
-                    this.router.navigate(['/users/locked']);
                 }
             );
     }
 
-    cancel () {}
+    cancel () {
+        this.router.navigate(['/pets']);
+    }
+
 }

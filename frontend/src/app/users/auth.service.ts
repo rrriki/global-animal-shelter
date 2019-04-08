@@ -1,48 +1,77 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { tap } from 'rxjs/operators';
+import { User } from '../typing/user.interface';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
-    currentUser;
+    jwtHelper: JwtHelperService = new JwtHelperService();
+    currentUser: User;
 
-    constructor (private httpClient: HttpClient) { }
+    constructor (private httpClient: HttpClient, private router: Router) {
+        // Validate if a the user is loggedIn when refresh
+        if (this.isAuthenticated()) {
+            const token = AuthService.getToken();
+            const { user } = this.jwtHelper.decodeToken(token);
+            console.log('decoded user', user);
+            this.currentUser = user;
+        } else {
+            this.currentUser = Object.create(null);
+        }
 
+    }
+
+    /** Helper method to retrieve token from localStorage **/
+    static getToken () {
+        return localStorage.getItem('jwt_token');
+    }
+
+    /** Helper method to validate token status and expiration **/
     isAuthenticated (): boolean {
-        const isValidUser = !!this.currentUser;
-        const isValidToken = moment().isBefore(this.getTokenExpiration());
-
-        return isValidUser && isValidToken;
+        const token = AuthService.getToken();
+        if (!token) {
+            return false;
+        }
+        const decoded = this.jwtHelper.decodeToken(token);
+        const expiresIn = moment.unix(decoded.exp);
+        return moment().isBefore(expiresIn);
     }
 
     login (email: string, password: string) {
-        return this.httpClient.post(`/api/auth`, { email, password });
+        return this.httpClient.post(`/api/auth`, { email, password })
+            .pipe(tap(
+                authResults => {
+                    this.setSession(authResults);
+                    this.router.navigate(['/pets']);
+                },
+                (err) => {
+                    console.log(err);
+                })
+            );
     }
 
     logout () {
         this.currentUser = null;
-        localStorage.removeItem('token_id');
-        localStorage.removeItem('token_expiration');
+        localStorage.removeItem('jwt_token');
+        this.router.navigate(['/users/login']);
     }
 
-    setSession (authResults) {
+    /**
+     * Helper function to extract and set the user & token from an auth request
+     * @param authResults - The result from an auth request signIn/register
+     */
+    private setSession (authResults) {
+        console.log('Setting session');
         const { data } = authResults;
-
-        this.currentUser = data.user;
-        const token = data.token;
-        const expiresAt = moment().add(data.expires, 'seconds');
-
-        console.log('service', this.currentUser);
-
-        localStorage.setItem('token_id', token);
-        localStorage.setItem('token_expiration', JSON.stringify(expiresAt.valueOf()));
-    }
-
-    private getTokenExpiration () {
-        const expiration = localStorage.getItem('token_expiration');
-        return moment(JSON.parse(expiration));
+        const { token } = data;
+        const { user } = this.jwtHelper.decodeToken(token);
+        this.currentUser = user;
+        localStorage.setItem('jwt_token', token);
     }
 }
