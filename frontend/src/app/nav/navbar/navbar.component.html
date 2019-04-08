@@ -17,11 +17,11 @@
                     <a class="nav-link" [routerLink]="['/pets']">All Pets</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" [routerLink]="['/pets/found']">Found a Pet</a>
+                    <a class="nav-link" [routerLink]="['/pets/add/found']">Found a Pet</a>
                 </li>
                 <!-- Dropdown menu -->
                 <div class="nav-item dropdown" data-toggle="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" [routerLink]="['/pets/lost']">Lost a Pet</a>
+                    <a href="#" class="nav-link dropdown-toggle" [routerLink]="['/pets/add/lost']">Lost a Pet</a>
                     <div class="dropdown-menu">
                         <a href="#" class="dropdown-item">Dogs</a>
                         <a href="#" class="dropdown-item">Cats</a>
@@ -40,7 +40,19 @@
                     <fa-icon [icon]="faUser" size="lg"></fa-icon>
                 </a>
 
-                <a *ngIf="auth.isAuthenticated()"> {{auth.currentUser.firstName}}</a>
+                <div *ngIf="auth.isAuthenticated()" class="nav-item dropdown" data-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle">{{auth.currentUser.firstName}}</a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <fa-icon [icon]="faUser" size="sm"></fa-icon>
+                            Profile
+                        </li>
+                        <li (click)="logOut()" class="dropdown-item">
+                            <fa-icon [icon]="faSignOut" size="sm"></fa-icon>
+                            Logout
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>

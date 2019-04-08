@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {faUser} from '@fortawesome/free-solid-svg-icons';
+import { faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../users/auth.service';
 
 @Component({
@@ -11,7 +11,13 @@ export class NavbarComponent {
 
     title = 'Global Animal Shelter';
     faUser = faUser;
+    faSignOut = faSignOutAlt;
 
     constructor (private auth: AuthService) { }
+
+    logOut () {
+        console.log('Logging user out');
+        this.auth.logout();
+    }
 
 }
