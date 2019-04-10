@@ -4,6 +4,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDTO } from './createUser.dto';
 import { UserService } from './user.service';
+import { User } from '../shared/user.decorator';
 
 @ApiUseTags('Users')
 @Controller('users')
@@ -25,7 +26,8 @@ export class UserController {
 
     @Get('locked')
     @UseGuards(AuthGuard())
-    async testAuth () {
-        return { message: 'Auth works!' };
+    async testAuth (@User() user) {
+        console.log(user);
+        return { message: `${ user }, auth works!` };
     }
 }

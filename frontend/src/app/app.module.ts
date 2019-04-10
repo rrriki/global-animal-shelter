@@ -35,7 +35,7 @@ import { AuthInterceptor } from './users/auth.interceptor';
         HttpClientModule,
         FontAwesomeModule,
         FormsModule,
-        AgmCoreModule.forRoot({ apiKey: '', libraries: ['places'] })
+        AgmCoreModule.forRoot({ apiKey: 'AIzaSyARnNaxSRWybHbWZ63VEx8q6zRE91Ph58o', libraries: ['places'] })
     ],
     providers: [
         AuthService,

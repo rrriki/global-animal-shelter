@@ -18,6 +18,7 @@ export class CreatePetComponent implements OnInit {
     longitude: number;
     zoom: number;
     isLost: boolean;
+    imageUrl: string;
 
     constructor (
         private activatedRoute: ActivatedRoute,
@@ -57,7 +58,7 @@ export class CreatePetComponent implements OnInit {
 
                 // Extract location info
                 const location = this.extractLocation(place);
-                console.log(location);
+
                 this.newPet.location = location;
                 // Set latitude, longitude and zoom for map.
                 this.latitude = location.latitude;
@@ -76,11 +77,34 @@ export class CreatePetComponent implements OnInit {
         this.router.navigate(['/pets']);
     }
 
+    onPhotoInputChange (event) {
+        // TODO: read multiple files and add as form data.
+        const files = event.target.files;
+
+        if (files.length === 0) {
+            return;
+        }
+
+        const mimeType = files[0].type;
+        if (mimeType.match(/image\/*/) == null) {
+            alert('Only images are supported!');
+            return;
+        }
+
+        const reader = new FileReader();
+        // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
+        reader.readAsDataURL(files[0]);
+        reader.onload = (_event) => {
+            this.imageUrl = reader.result.toString();
+        };
+    }
+
     private extractLocation (placeResult: PlaceResult): Location {
         const location: Location = Object.create(null);
-        location.address = placeResult.formatted_address;
+
         location.latitude = placeResult.geometry.location.lat();
         location.longitude = placeResult.geometry.location.lng();
+        location.address = placeResult.formatted_address;
 
         for (const component of placeResult.address_components) {
             if (component.types.includes('country')) {
@@ -91,13 +115,12 @@ export class CreatePetComponent implements OnInit {
                 location['state'] = component.long_name;
                 continue;
             }
-            if (component.types.includes('administrative_area_level_2')) {
+            if (component.types.includes('locality')) {
                 location['city'] = component.long_name;
             }
         }
 
         return location;
-
     }
 
     private setCurrentPosition () {
