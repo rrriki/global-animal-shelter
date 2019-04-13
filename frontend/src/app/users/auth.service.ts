@@ -15,7 +15,7 @@ export class AuthService {
     currentUser: User;
 
     constructor (private httpClient: HttpClient, private router: Router) {
-        // Validate if a the user is loggedIn when refresh
+        // Validate if a the user is loggedIn when the page is refresh
         if (this.isAuthenticated()) {
             const token = AuthService.getToken();
             const { user } = this.jwtHelper.decodeToken(token);

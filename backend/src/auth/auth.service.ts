@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { LoginAttemptDTO } from './loginAttempt.dto';
@@ -37,22 +37,19 @@ export class AuthService {
      * @param payload
      */
     async validateUserByJwt (payload: JwtPayload) {
-        const user = await this.userService.findUserByEmail(payload.user.email);
-
-        if (user) {
-            return this.signTokenForPayload(user);
-        } else {
-            throw new UnauthorizedException();
-        }
+        const { email } = payload.user;
+        return await this.userService.findUserByEmail(email);
     }
 
     /**
-     * Add the user’s email address to the payload, and sign it using the JwtService and JWT_SECRET
-     * @param user
+     * Add the user info to the payload, and sign it using the JwtService and JWT_SECRET
+     * @param payload
      */
-    signTokenForPayload (user) {
-        // remove password
+    signTokenForPayload (payload) {
+        // Convert  Mongoose doc to plain object to remove password
+        const user = payload.toObject();
         delete user.password;
+
         const data: JwtPayload = {
             user,
         };
