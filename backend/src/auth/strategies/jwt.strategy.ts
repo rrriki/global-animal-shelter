@@ -20,11 +20,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
      * @param payload - Decoded token payload
      */
     async validate (payload: JwtPayload): Promise<User> {
-        const user: User = await this.authService.validateUserByJwt(payload);
+        let user: User = await this.authService.validateUserByJwt(payload);
         if (!user) {
             throw new UnauthorizedException();
         }
-
+        user = user.toObject();
+        delete user.password; // TODO: What's the best way to clean the object before sending to client?
         return user;
     }
 }

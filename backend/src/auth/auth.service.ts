@@ -1,10 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { LoginAttemptDTO } from './loginAttempt.dto';
 import { UserService } from '../users/user.service';
 import { Configuration } from '../configuration';
-import { User } from '../users/user.interface';
 
 const logger = new Logger('AuthService');
 

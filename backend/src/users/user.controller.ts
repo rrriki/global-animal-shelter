@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get, Response, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Body, Post, Get, Response, HttpException, HttpStatus, UseGuards, Res } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
@@ -26,8 +26,11 @@ export class UserController {
 
     @Get('locked')
     @UseGuards(AuthGuard())
-    async testAuth (@User() user) {
+    async testAuth (@User() user, @Res() res) {
         console.log(user);
-        return { message: `${ user }, auth works!` };
+        res.send({
+            message: 'auth works!',
+            user,
+        });
     }
 }
