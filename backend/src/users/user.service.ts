@@ -19,6 +19,10 @@ export class UserService {
 
     async findUserByEmail (email: string): Promise<any> {
         logger.log(`Finding user with email: ${ email }`);
-        return await this.userModel.findOne({ email });
+        let user = await this.userModel.findOne({ email });
+
+        user = user.toObject();
+        delete user.password;
+        return user;
     }
 }

@@ -46,12 +46,9 @@ export class AuthService {
      * @param payload
      */
     signTokenForPayload (payload) {
-        // Convert  Mongoose doc to plain object to remove password
-        const user = payload.toObject();
-        delete user.password;
 
         const data: JwtPayload = {
-            user,
+            user: payload,
         };
 
         const expiresIn = Configuration.getJwtExpirationSeconds();

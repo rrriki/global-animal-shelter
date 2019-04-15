@@ -1,3 +1,12 @@
 agm-map {
     height: 300px;
 }
+
+.thumbnails {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.thumbnails img {
+    max-height: 150px;
+}

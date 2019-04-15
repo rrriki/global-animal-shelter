@@ -1,37 +1,61 @@
-<div>
-    <form #newPetForm="ngForm" (ngSubmit)="savePet(newPetForm.value)" autocomplete="off" novalidate>
+<div class="card p-3">
+
+    <form [formGroup]="newPetForm" (ngSubmit)="savePet(newPetForm.value)" autocomplete="off" novalidate>
 
         <div class="form-group">
-            <label for="petName">Name</label>
-            <input [(ngModel)]="newPet.name" id="petName" type="text" name="petName" placeholder="Pets name..."
+            <label for="name" class="font-weight-bold">Name:</label>
+            <input formControlName="name" id="name" type="text" name="name" placeholder="Pets name"
                    class="form-control">
-
         </div>
 
         <div class="form-group">
-            <label for="location">Location</label>
+            <label for="description" class="font-weight-bold">Description:</label>
+            <textarea formControlName="description" class="form-control" id="description"
+                      placeholder="Give some details about it">
+            </textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="location" class="font-weight-bold">Location:</label>
             <input #location id="location" type="text" name="location"
                    placeholder="Where did you last saw it?"
                    class="form-control" autocapitalize="off">
+
+            <div class="my-3">
+                <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom">
+                    <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+                </agm-map>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="photo">Photo</label>
-            <input id="photo" type="file" accept="image/*" (change)="onPhotoInputChange($event)">
+            <p class="font-weight-bold">Photo:</p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Upload</span>
+                </div>
+                <div class="custom-file">
+                    <label class="custom-file-label" for="photo">Add one or more files</label>
+                    <input type="file" class="custom-file-input" id="photo" accept="image/*"
+                           multiple (change)="onPhotoInputChange($event)">
+                </div>
+            </div>
 
         </div>
 
-        <img src="{{imageUrl}}" alt="Alt text for image">
-
-        <div>
-            <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom">
-                <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
-            </agm-map>
+        <div *ngIf="images.length > 0">
+            <ul class="list-group flex-row thumbnails">
+                <li *ngFor="let image of images" class="list-group-item m-2">
+                    <img src="{{image.url}}" class="rounded" alt="{{image.name}}">
+                </li>
+            </ul>
         </div>
 
         <div class="text-center my-3">
             <button type="submit" [disabled]="newPetForm.invalid" class="btn btn-primary mx-1">Save</button>
-            <button type="button" class="btn btn-secondary mx-1" (click)="cancel()">Cancel</button>
+            <button type="button" class="btn btn-secondary m-1" (click)="cancel()">Cancel</button>
         </div>
     </form>
+
+
 </div>

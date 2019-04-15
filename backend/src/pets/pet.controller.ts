@@ -1,5 +1,6 @@
 import {
     Controller,
+    Headers,
     Body,
     Param,
     Get,
@@ -8,7 +9,7 @@ import {
     Response,
     HttpStatus,
     HttpException,
-    Delete,
+    Delete, UseInterceptors, FilesInterceptor, UploadedFiles,
 } from '@nestjs/common';
 import { ApiUseTags, ApiResponse } from '@nestjs/swagger';
 import { PetService } from './pet.service';
@@ -24,7 +25,12 @@ export class PetController {
     @Post()
     @ApiResponse({ status: HttpStatus.OK, description: 'Pet has been successfully created' })
     @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating Pet' })
-    public async createPet (@Response() res, @Body() pet: CreatePetDTO): Promise<Pet> {
+    @UseInterceptors(FilesInterceptor('files'))
+    public async createPet (@Response() res, @UploadedFiles() files, @Body() pet: any, @Headers() headers): Promise<Pet> {
+        // https://github.com/nestjs/nest/issues/1169
+        console.log('header', headers)
+        console.log(files)
+        console.log('pet', pet);
         try {
             const newPet = await this.petService.createPet(pet);
             return res.status(HttpStatus.OK).json(newPet);

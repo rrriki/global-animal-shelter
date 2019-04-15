@@ -8,4 +8,4 @@ export const PetSchema = new mongoose.Schema({
     photos: [{ type: String }],
     isLost: { type: Boolean, required: true },
     isDeleted: { type: Boolean, default: false },
-});
+}, { versionKey: false });
