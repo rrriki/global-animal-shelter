@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Pet } from '../typing/pet.interface';
 
@@ -16,6 +16,10 @@ export class PetService {
 
     findAllPets (): Observable<Pet[]> {
         return this.httpClient.get<Pet[]>(`/api/pets`);
+    }
+
+    createPet (petData): Observable<Pet> {
+        return this.httpClient.post<Pet>(`/api/pets`, petData);
     }
 
     async findLostPets () {}

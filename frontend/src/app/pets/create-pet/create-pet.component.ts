@@ -1,9 +1,11 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MapsAPILoader } from '@agm/core';
 import { Pet } from '../../typing/pet.interface';
-import { Location } from '../../typing/location.interface'; // TODO: use barrels
+import { Location } from '../../typing/location.interface';
 import PlaceResult = google.maps.places.PlaceResult;
+import { PetService } from '../pet.service';
 
 
 @Component({
@@ -12,19 +14,22 @@ import PlaceResult = google.maps.places.PlaceResult;
     styleUrls: ['./create-pet.component.css']
 })
 export class CreatePetComponent implements OnInit {
-
-    newPet: Pet = Object.create(null);
-    latitude: number;
-    longitude: number;
-    zoom: number;
+    newPetForm: FormGroup;
     isLost: boolean;
-    imageUrl: string;
+    images: Array<{ name: string, url: string }> = [];
+    // Initial coordinates for the map
+    latitude = 37.4219999;
+    longitude = -122.08405749999997;
+    zoom = 13;
+
 
     constructor (
         private activatedRoute: ActivatedRoute,
         private router: Router,
+        private formBuilder: FormBuilder,
         private mapsAPILoader: MapsAPILoader,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private petService: PetService,
     ) {
 
         activatedRoute.data.subscribe((data) => {
@@ -37,16 +42,86 @@ export class CreatePetComponent implements OnInit {
     public locationSearchRef: ElementRef;
 
     async ngOnInit (): Promise<void> {
-        // Initial coordinates.
-        this.zoom = 5;
-        this.latitude = 39.8282;
-        this.longitude = -98.5795;
+
+        this.newPetForm = this.formBuilder.group({
+            name: ['', Validators.required],
+            description: ['', [Validators.required, Validators.minLength(1)]],
+            location: ['', Validators.required],
+            files: this.formBuilder.array([], Validators.minLength(1))
+        });
 
         this.setCurrentPosition();
+        await this.setPlacesAutoComplete();
+    }
 
-        // Start Places AutoComplete
+    savePet (formValues) {
+        const data = new FormData();
+
+        const fields = Object.keys(formValues);
+        for (const field of fields) {
+            data.append(field, formValues[field]);
+        }
+
+        this.petService.createPet(data).subscribe((res) => {
+            console.log('response', res);
+        });
+    }
+
+    async cancel () {
+        await this.router.navigate(['/pets']);
+    }
+
+    /**
+     * Event handler for the Photos Input
+     * @param event - Input change event, with new files
+     */
+    onPhotoInputChange (event) {
+        const { files } = event.target;
+
+        if (files.length === 0) {
+            return;
+        }
+
+        for (const file of files) {
+            const { name, type } = file;
+
+            if (type.match(/image\/*/) == null) {
+                alert('Only images are supported!');
+                continue;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const filesControl = this.newPetForm.get('files').value;
+                filesControl.push(file);
+                this.images.push({ name, url: reader.result.toString() });
+            };
+        }
+    }
+
+    /**
+     * If geolocation is enabled in browser, updates the map.
+     */
+    private setCurrentPosition () {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                this.latitude = latitude;
+                this.longitude = longitude;
+                this.zoom = 15;
+            });
+        }
+    }
+
+    /**
+     * Starts Google Places AutoComplete on the Location Input
+     * Adds onChange handler, to update map and location
+     */
+    private async setPlacesAutoComplete () {
         await this.mapsAPILoader.load();
         const autoComplete = new google.maps.places.Autocomplete(this.locationSearchRef.nativeElement);
+
         autoComplete.addListener('place_changed', () => {
             this.ngZone.run(() => {
                 const place = autoComplete.getPlace();
@@ -58,9 +133,7 @@ export class CreatePetComponent implements OnInit {
 
                 // Extract location info
                 const location = this.extractLocation(place);
-
-                this.newPet.location = location;
-                // Set latitude, longitude and zoom for map.
+                this.newPetForm.patchValue({ 'location': JSON.stringify(location) });
                 this.latitude = location.latitude;
                 this.longitude = location.longitude;
                 this.zoom = 15;
@@ -68,37 +141,10 @@ export class CreatePetComponent implements OnInit {
         });
     }
 
-    savePet (formValues) {
-        console.log(formValues);
-        console.log(this.newPet);
-    }
-
-    cancel () {
-        this.router.navigate(['/pets']);
-    }
-
-    onPhotoInputChange (event) {
-        // TODO: read multiple files and add as form data.
-        const files = event.target.files;
-
-        if (files.length === 0) {
-            return;
-        }
-
-        const mimeType = files[0].type;
-        if (mimeType.match(/image\/*/) == null) {
-            alert('Only images are supported!');
-            return;
-        }
-
-        const reader = new FileReader();
-        // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL
-        reader.readAsDataURL(files[0]);
-        reader.onload = (_event) => {
-            this.imageUrl = reader.result.toString();
-        };
-    }
-
+    /**
+     * Extracts and formats useful information from a Google Places result
+     * @param placeResult - A Google Place result
+     */
     private extractLocation (placeResult: PlaceResult): Location {
         const location: Location = Object.create(null);
 
@@ -121,16 +167,5 @@ export class CreatePetComponent implements OnInit {
         }
 
         return location;
-    }
-
-    private setCurrentPosition () {
-        if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                console.log(position);
-                this.latitude = position.coords.latitude;
-                this.longitude = position.coords.longitude;
-                this.zoom = 12;
-            });
-        }
     }
 }

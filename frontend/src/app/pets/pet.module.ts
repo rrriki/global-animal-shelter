@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AgmCoreModule } from '@agm/core';
 import { CreatePetComponent } from './create-pet/create-pet.component';
 import { PetListComponent } from './pet-list/pet-list.component';
@@ -14,7 +14,7 @@ import { petRoutes } from './pet.routes';
 @NgModule({
     imports: [
         CommonModule,
-        FormsModule,
+        ReactiveFormsModule,
         RouterModule.forChild(petRoutes),
         AgmCoreModule.forRoot({ apiKey: 'AIzaSyARnNaxSRWybHbWZ63VEx8q6zRE91Ph58o', libraries: ['places'] })
     ],
@@ -29,4 +29,5 @@ import { petRoutes } from './pet.routes';
         PetDetailResolver,
     ]
 })
-export class PetModule {}
+export class PetModule {
+}
