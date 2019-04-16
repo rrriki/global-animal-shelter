@@ -28,12 +28,9 @@ export class PetController {
     @UseInterceptors(FilesInterceptor('files'))
     public async createPet (@Response() res, @UploadedFiles() files, @Body() pet: any, @Headers() headers): Promise<Pet> {
         // https://github.com/nestjs/nest/issues/1169
-        console.log('header', headers)
-        console.log(files)
-        console.log('pet', pet);
         try {
-            const newPet = await this.petService.createPet(pet);
-            return res.status(HttpStatus.OK).json(newPet);
+            // const newPet = await this.petService.createPet(pet);
+            return res.status(HttpStatus.OK).json();
         } catch (e) {
             throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
