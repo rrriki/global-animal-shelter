@@ -27,6 +27,9 @@ export class PetController {
     @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating Pet' })
     @UseInterceptors(FilesInterceptor('files'))
     public async createPet (@Response() res, @UploadedFiles() files, @Body() pet: any, @Headers() headers): Promise<Pet> {
+        console.log('headers', headers);
+        console.log('files', files);
+        console.log('body', pet)
         // https://github.com/nestjs/nest/issues/1169
         try {
             // const newPet = await this.petService.createPet(pet);

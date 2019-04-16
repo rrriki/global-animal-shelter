@@ -1,5 +1,5 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MapsAPILoader } from '@agm/core';
 import { Pet } from '../../typing/pet.interface';
@@ -62,6 +62,7 @@ export class CreatePetComponent implements OnInit {
             data.append(field, formValues[field]);
         }
 
+
         this.petService.createPet(data).subscribe((res) => {
             console.log('response', res);
         });
@@ -82,8 +83,12 @@ export class CreatePetComponent implements OnInit {
             return;
         }
 
+        const filesControl = this.newPetForm.get('files') as FormArray;
+
         for (const file of files) {
             const { name, type } = file;
+
+            filesControl.push(new FormControl(file));
 
             if (type.match(/image\/*/) == null) {
                 alert('Only images are supported!');
@@ -93,8 +98,6 @@ export class CreatePetComponent implements OnInit {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
-                const filesControl = this.newPetForm.get('files').value;
-                filesControl.push(file);
                 this.images.push({ name, url: reader.result.toString() });
             };
         }
