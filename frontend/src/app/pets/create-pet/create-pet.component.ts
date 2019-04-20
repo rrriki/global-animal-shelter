@@ -2,7 +2,6 @@ import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core'
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MapsAPILoader } from '@agm/core';
-import { Pet } from '../../typing/pet.interface';
 import { Location } from '../../typing/location.interface';
 import PlaceResult = google.maps.places.PlaceResult;
 import { PetService } from '../pet.service';
@@ -54,24 +53,6 @@ export class CreatePetComponent implements OnInit {
         await this.setPlacesAutoComplete();
     }
 
-    savePet (formValues) {
-        const data = new FormData();
-
-        const fields = Object.keys(formValues);
-        for (const field of fields) {
-            data.append(field, formValues[field]);
-        }
-
-
-        this.petService.createPet(data).subscribe((res) => {
-            console.log('response', res);
-        });
-    }
-
-    async cancel () {
-        await this.router.navigate(['/pets']);
-    }
-
     /**
      * Event handler for the Photos Input
      * @param event - Input change event, with new files
@@ -88,13 +69,14 @@ export class CreatePetComponent implements OnInit {
         for (const file of files) {
             const { name, type } = file;
 
-            filesControl.push(new FormControl(file));
-
             if (type.match(/image\/*/) == null) {
                 alert('Only images are supported!');
                 continue;
             }
 
+            filesControl.push(new FormControl(file));
+
+            // Show preview
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
@@ -170,5 +152,30 @@ export class CreatePetComponent implements OnInit {
         }
 
         return location;
+    }
+
+
+    savePet (formValues) {
+        const data = new FormData();
+
+        data.append('isLost', String(this.isLost));
+
+        const fields = Object.keys(formValues);
+        for (const field of fields) {
+            if (field === 'files') {
+                const files: File[] = formValues[field];
+                files.forEach((file) => {data.append(field, file, file.name); });
+            } else {
+                data.append(field, formValues[field]);
+            }
+        }
+
+        this.petService.createPet(data).subscribe((res) => {
+            console.log('response', res);
+        });
+    }
+
+    async cancel () {
+        await this.router.navigate(['/pets']);
     }
 }

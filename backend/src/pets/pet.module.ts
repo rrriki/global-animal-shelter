@@ -1,4 +1,5 @@
 import { Module, MulterModule } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PetSchema } from './pet.schema';
 import { PetService } from './pet.service';
@@ -7,6 +8,7 @@ import * as multer from 'multer';
 
 @Module({
     imports: [
+        PassportModule.register({ defaultStrategy: 'jwt', session: false }),
         MongooseModule.forFeature([{ name: 'Pet', schema: PetSchema }]),
         MulterModule.register({
             storage: multer.diskStorage({

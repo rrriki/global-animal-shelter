@@ -9,8 +9,9 @@ import {
     Response,
     HttpStatus,
     HttpException,
-    Delete, UseInterceptors, FilesInterceptor, UploadedFiles,
+    Delete, UseInterceptors, FilesInterceptor, UploadedFiles, UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiResponse } from '@nestjs/swagger';
 import { PetService } from './pet.service';
 import { Pet } from './pet.interface';
@@ -23,13 +24,11 @@ export class PetController {
     constructor (private readonly petService: PetService) { }
 
     @Post()
+    @UseGuards(AuthGuard())
     @ApiResponse({ status: HttpStatus.OK, description: 'Pet has been successfully created' })
     @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating Pet' })
     @UseInterceptors(FilesInterceptor('files'))
     public async createPet (@Response() res, @UploadedFiles() files, @Body() pet: any, @Headers() headers): Promise<Pet> {
-        console.log('headers', headers);
-        console.log('files', files);
-        console.log('body', pet)
         // https://github.com/nestjs/nest/issues/1169
         try {
             // const newPet = await this.petService.createPet(pet);

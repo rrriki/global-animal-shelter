@@ -6,16 +6,12 @@ import {
     Response,
     HttpException,
     HttpStatus,
-    UseGuards,
-    Res,
-    Param
+    Param,
 } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { ApiUseTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDTO } from './createUser.dto';
 import { UserService } from './user.service';
-import { User } from '../shared/user.decorator';
 
 @ApiUseTags('Users')
 @Controller('users')
@@ -45,15 +41,5 @@ export class UserController {
         } catch (e) {
             throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Get('locked')
-    @UseGuards(AuthGuard())
-    async testAuth (@User() user, @Res() res) {
-        console.log(user);
-        res.send({
-            message: 'auth works!',
-            user,
-        });
     }
 }

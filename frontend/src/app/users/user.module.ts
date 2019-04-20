@@ -7,7 +7,6 @@ import { UserService } from './user.service';
 import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserLoginComponent } from './user-login/user-login.component';
 import { userRoutes } from './user.routes';
-import { LockedComponent } from './locked/locked.component';
 
 @NgModule({
     imports: [
@@ -19,8 +18,8 @@ import { LockedComponent } from './locked/locked.component';
     declarations: [
         UserRegisterComponent,
         UserLoginComponent,
-        LockedComponent
     ],
     providers: [UserService]
 })
-export class UserModule {}
+export class UserModule {
+}
