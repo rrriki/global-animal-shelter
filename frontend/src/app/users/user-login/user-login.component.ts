@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
     selector: 'app-user-login',

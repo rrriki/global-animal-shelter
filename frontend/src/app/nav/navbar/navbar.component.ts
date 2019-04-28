@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../../users/auth.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
     selector: 'app-navbar',

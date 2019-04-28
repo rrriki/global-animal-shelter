@@ -26,6 +26,7 @@ export class AuthService {
         }
         // Check the supplied password against the hash stored for this email address
         if (await user.isValidPassword(loginAttempt.password)) {
+            // TODO: Clean user object for client (remove password, sensitive info)
             return { message: 'Login successful', data: { token: this.signTokenForPayload(user) } };
         } else {
             return { message: 'Wrong password', data: null };
