@@ -5,6 +5,7 @@ import { MapsAPILoader } from '@agm/core';
 import { Location } from '../../typing/location.interface';
 import PlaceResult = google.maps.places.PlaceResult;
 import { PetService } from '../pet.service';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -13,6 +14,7 @@ import { PetService } from '../pet.service';
     styleUrls: ['./create-pet.component.css']
 })
 export class CreatePetComponent implements OnInit {
+    faTimes = faTimes;
     newPetForm: FormGroup;
     isLost: boolean;
     images: Array<{ name: string, url: string }> = [];
@@ -86,6 +88,16 @@ export class CreatePetComponent implements OnInit {
     }
 
     /**
+     * Click handler for the remove photo button
+     * @param index - The index of the photo to remove
+     */
+    onRemovePhoto (index: number): void {
+        this.images.splice(index, 1);
+        const filesControl = this.newPetForm.get('files') as FormArray;
+        filesControl.removeAt(index);
+    }
+
+    /**
      * If geolocation is enabled in browser, updates the map.
      */
     private setCurrentPosition () {
@@ -155,7 +167,8 @@ export class CreatePetComponent implements OnInit {
     }
 
 
-    savePet (formValues) {
+    savePet (formValues: object): void {
+        console.log(formValues);
         const data = new FormData();
 
         data.append('isLost', String(this.isLost));
