@@ -3,10 +3,25 @@ agm-map {
 }
 
 .thumbnails {
-    overflow-x: auto;
+    overflow-x: scroll;
     overflow-y: hidden;
 }
 
-.thumbnails img {
+.list-group-item {
+    border: none;
+}
+
+.thumbnail {
+    position: relative;
+    box-shadow: 5px 5px 5px lightgray;
+}
+
+.thumbnail img {
     max-height: 150px;
+}
+
+.thumbnail fa-icon {
+    right: 4px;
+    position: absolute;
+    cursor: pointer;
 }
