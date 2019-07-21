@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Pet } from '../../typing/pet.interface';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Pet} from '../../typing/pet.interface';
 
 
 @Component({
@@ -12,11 +12,11 @@ export class PetDetailComponent implements OnInit {
 
     pet: Pet;
 
-    constructor (private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute) {
         this.pet = this.activatedRoute.snapshot.data.pet;
     }
 
-    ngOnInit () {
+    ngOnInit() {
         console.log(this.pet);
     }
 

@@ -1,5 +1,5 @@
-import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsBoolean, Length } from 'class-validator';
+import {ApiModelProperty, ApiModelPropertyOptional} from '@nestjs/swagger';
+import {IsNotEmpty, IsBooleanString, Length} from 'class-validator';
 
 export class CreatePetDTO {
     @ApiModelProperty()
@@ -20,6 +20,6 @@ export class CreatePetDTO {
 
     @ApiModelProperty()
     @IsNotEmpty()
-    @IsBoolean()
+    @IsBooleanString()
     isLost: boolean;
 }

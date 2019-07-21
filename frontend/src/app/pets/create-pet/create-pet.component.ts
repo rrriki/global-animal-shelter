@@ -1,11 +1,11 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MapsAPILoader } from '@agm/core';
-import { Location } from '../../typing/location.interface';
+import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MapsAPILoader} from '@agm/core';
+import {Location} from '../../typing/location.interface';
 import PlaceResult = google.maps.places.PlaceResult;
-import { PetService } from '../pet.service';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import {PetService} from '../pet.service';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -17,14 +17,14 @@ export class CreatePetComponent implements OnInit {
     faTimes = faTimes;
     newPetForm: FormGroup;
     isLost: boolean;
-    images: Array<{ name: string, url: string }> = [];
+    images: Array<{name: string, url: string}> = [];
     // Initial coordinates for the map
     latitude = 37.4219999;
     longitude = -122.08405749999997;
     zoom = 13;
 
 
-    constructor (
+    constructor(
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private formBuilder: FormBuilder,
@@ -34,7 +34,7 @@ export class CreatePetComponent implements OnInit {
     ) {
 
         activatedRoute.data.subscribe((data) => {
-            const { isLost } = data;
+            const {isLost} = data;
             this.isLost = isLost;
         });
     }
@@ -42,7 +42,7 @@ export class CreatePetComponent implements OnInit {
     @ViewChild('location')
     public locationSearchRef: ElementRef;
 
-    async ngOnInit (): Promise<void> {
+    async ngOnInit(): Promise<void> {
 
         this.newPetForm = this.formBuilder.group({
             name: ['', Validators.required],
@@ -59,8 +59,8 @@ export class CreatePetComponent implements OnInit {
      * Event handler for the Photos Input
      * @param event - Input change event, with new files
      */
-    onPhotoInputChange (event) {
-        const { files } = event.target;
+    onPhotoInputChange(event) {
+        const {files} = event.target;
 
         if (files.length === 0) {
             return;
@@ -69,7 +69,7 @@ export class CreatePetComponent implements OnInit {
         const filesControl = this.newPetForm.get('files') as FormArray;
 
         for (const file of files) {
-            const { name, type } = file;
+            const {name, type} = file;
 
             if (type.match(/image\/*/) == null) {
                 alert('Only images are supported!');
@@ -82,7 +82,7 @@ export class CreatePetComponent implements OnInit {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
-                this.images.push({ name, url: reader.result.toString() });
+                this.images.push({name, url: reader.result.toString()});
             };
         }
     }
@@ -91,7 +91,7 @@ export class CreatePetComponent implements OnInit {
      * Click handler for the remove photo button
      * @param index - The index of the photo to remove
      */
-    onRemovePhoto (index: number): void {
+    onRemovePhoto(index: number): void {
         this.images.splice(index, 1);
         const filesControl = this.newPetForm.get('files') as FormArray;
         filesControl.removeAt(index);
@@ -100,10 +100,10 @@ export class CreatePetComponent implements OnInit {
     /**
      * If geolocation is enabled in browser, updates the map.
      */
-    private setCurrentPosition () {
+    private setCurrentPosition() {
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
-                const { latitude, longitude } = position.coords;
+                const {latitude, longitude} = position.coords;
                 this.latitude = latitude;
                 this.longitude = longitude;
                 this.zoom = 15;
@@ -115,7 +115,7 @@ export class CreatePetComponent implements OnInit {
      * Starts Google Places AutoComplete on the Location Input
      * Adds onChange handler, to update map and location
      */
-    private async setPlacesAutoComplete () {
+    private async setPlacesAutoComplete() {
         await this.mapsAPILoader.load();
         const autoComplete = new google.maps.places.Autocomplete(this.locationSearchRef.nativeElement);
 
@@ -130,7 +130,7 @@ export class CreatePetComponent implements OnInit {
 
                 // Extract location info
                 const location = this.extractLocation(place);
-                this.newPetForm.patchValue({ 'location': JSON.stringify(location) });
+                this.newPetForm.patchValue({'location': JSON.stringify(location)});
                 this.latitude = location.latitude;
                 this.longitude = location.longitude;
                 this.zoom = 15;
@@ -142,7 +142,7 @@ export class CreatePetComponent implements OnInit {
      * Extracts and formats useful information from a Google Places result
      * @param placeResult - A Google Place result
      */
-    private extractLocation (placeResult: PlaceResult): Location {
+    private extractLocation(placeResult: PlaceResult): Location {
         const location: Location = Object.create(null);
 
         location.latitude = placeResult.geometry.location.lat();
@@ -167,7 +167,7 @@ export class CreatePetComponent implements OnInit {
     }
 
 
-    savePet (formValues: object): void {
+    savePet(formValues: object): void {
         console.log(formValues);
         const data = new FormData();
 
@@ -188,7 +188,7 @@ export class CreatePetComponent implements OnInit {
         });
     }
 
-    async cancel () {
+    async cancel() {
         await this.router.navigate(['/pets']);
     }
 }

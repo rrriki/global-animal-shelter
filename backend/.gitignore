@@ -3,6 +3,10 @@
 # environment variables
 .env
 
+# uploaded files
+/uploads
+/public
+
 # compiled output
 /dist
 /tmp

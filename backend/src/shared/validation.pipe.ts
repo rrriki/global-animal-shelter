@@ -1,12 +1,13 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
+import {PipeTransform, Injectable, ArgumentMetadata, BadRequestException} from '@nestjs/common';
+import {validate} from 'class-validator';
+import {plainToClass} from 'class-transformer';
+import * as _ from 'lodash';
 
 /* https://docs.nestjs.com/pipes */
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
-    async transform(value, { metatype }: ArgumentMetadata) {
+    async transform(value, {metatype}: ArgumentMetadata) {
         if (!metatype || !this.toValidate(metatype)) {
             return value;
         }
@@ -14,14 +15,14 @@ export class ValidationPipe implements PipeTransform<any> {
         const errors = await validate(object);
 
         if (errors.length > 0) {
-            const failedConstraints = [];
-            const messages = errors.map((error) => {
-                const { constraints } = error;
 
-                for (const key of Object.keys(constraints)) {
-                    failedConstraints.push(constraints[key]);
-                }
+            let failedConstraints = [];
+
+            _.forEach(errors, (error) => {
+                const {constraints} = error;
+                failedConstraints = _.concat(failedConstraints, _.values(constraints));
             });
+
             throw new BadRequestException(failedConstraints, 'Validation Failed');
         }
         return value;

@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import {Document} from 'mongoose';
 
 export interface Pet extends Document {
     id: string;
@@ -8,4 +8,5 @@ export interface Pet extends Document {
     description: string;
     photos: string[];
     isLost: boolean;
+    isDeleted: boolean;
 }

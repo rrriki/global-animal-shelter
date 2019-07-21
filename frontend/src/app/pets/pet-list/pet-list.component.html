@@ -7,8 +7,8 @@
         <div class="card h-100">
             <div class="card-header text-center">{{pet.isLost ? "LOST" : "FOUND"}}</div>
 
-            <!-- https://getbootstrap.com/docs/4.0/components/carousel/ -->
-            <img *ngIf="pet.photos.length > 0" class="card-img-top" src="{{pet.photos[0]}}"
+            <!--TODO: https://getbootstrap.com/docs/4.0/components/carousel/ -->
+            <img *ngIf="pet.photos.length > 0" class="card-img-top" src="api/{{pet.photos[0]}}"
                  alt="{{pet.description}}">
             <div class="card-body">
                 <h5 class="card-title">{{pet.name}}</h5>

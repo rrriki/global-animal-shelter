@@ -1,4 +1,4 @@
-import { Location } from './location.interface';
+import {Location} from './location.interface';
 
 export interface Pet {
     id: string;

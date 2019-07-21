@@ -1,17 +1,16 @@
 import * as mongoose from 'mongoose';
-
 import * as bcrypt from 'bcrypt';
-import { Logger } from '@nestjs/common';
-import { User } from './user.interface';
+import {Logger} from '@nestjs/common';
+import {User} from '../typing/user.interface';
 
 const logger = new Logger('UserSchema');
 
 export const UserSchema = new mongoose.Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-}, { versionKey: false });
+    firstName: {type: String, required: true},
+    lastName: {type: String, required: true},
+    email: {type: String, required: true, unique: true},
+    password: {type: String, required: true},
+}, {versionKey: false});
 
 // Hash password with bcrypt before saving
 UserSchema.pre<User>('save', async function(next) {

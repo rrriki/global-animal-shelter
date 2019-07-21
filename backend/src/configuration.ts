@@ -1,14 +1,19 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 export class Configuration {
 
-    static getPort() {
-        return process.env.PORT;
+    static PUBLIC_FOLDER = 'public';
+
+    static getPort(): number {
+        return +process.env.PORT;
     }
 
-    static getJwtSecret() {
+    static getJwtSecret(): string {
         return process.env.JWT_SECRET;
     }
 
-    static getJwtExpirationSeconds() {
+    static getJwtExpirationSeconds(): number {
         return 3600;
     }
 
@@ -21,5 +26,20 @@ export class Configuration {
                 useFindAndModify: false,
             },
         };
+    }
+
+    static getPublicUploadsDirectory(folder?: string): string {
+
+        let uploadPath = path.join(__dirname, '..', Configuration.PUBLIC_FOLDER);
+
+        if (folder) {
+            uploadPath = path.join(uploadPath, folder);
+        }
+
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, {recursive: true}); // Node V. >= 10.12
+        }
+
+        return uploadPath;
     }
 }

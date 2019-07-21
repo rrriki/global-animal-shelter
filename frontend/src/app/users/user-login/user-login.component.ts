@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../../auth/auth.service';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {faFacebook} from '@fortawesome/free-brands-svg-icons';
+import {faUser, faLock} from '@fortawesome/free-solid-svg-icons';
+import {AuthService} from '../../auth/auth.service';
 
 @Component({
     selector: 'app-user-login',
@@ -19,9 +19,9 @@ export class UserLoginComponent {
     password: string;
     isMouseOverLogin: boolean;
 
-    constructor (private router: Router, private auth: AuthService) { }
+    constructor(private router: Router, private auth: AuthService) { }
 
-    login (formValues) {
+    login(formValues) {
         this.auth.login(formValues.email, formValues.password)
             .subscribe(
                 () => {
@@ -30,7 +30,7 @@ export class UserLoginComponent {
             );
     }
 
-    cancel () {
+    cancel() {
         this.router.navigate(['/pets']);
     }
 

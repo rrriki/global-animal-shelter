@@ -1,15 +1,15 @@
-import { Controller, Body, Post, Response, HttpStatus, HttpException } from '@nestjs/common';
-import { ApiUseTags } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { LoginAttemptDTO } from './loginAttempt.dto';
+import {Controller, Body, Post, Response, HttpStatus, HttpException} from '@nestjs/common';
+import {ApiUseTags} from '@nestjs/swagger';
+import {AuthService} from './auth.service';
+import {LoginAttemptDTO} from './loginAttempt.dto';
 
 @ApiUseTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor (private authService: AuthService) { }
+    constructor(private authService: AuthService) { }
 
     @Post()
-    async login (@Response() res, @Body() loginAttempt: LoginAttemptDTO) {
+    async login(@Response() res, @Body() loginAttempt: LoginAttemptDTO) {
         try {
             const result = await this.authService.validateUserByPassword(loginAttempt);
             if (result.data) {

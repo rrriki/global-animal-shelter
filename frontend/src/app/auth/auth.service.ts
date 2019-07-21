@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import * as moment from 'moment';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { tap } from 'rxjs/operators';
-import { User } from '../typing/user.interface';
-import { Router } from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {tap} from 'rxjs/operators';
+import {User} from '../typing/user.interface';
+import {Router} from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -14,11 +14,11 @@ export class AuthService {
     jwtHelper: JwtHelperService = new JwtHelperService();
     currentUser: User;
 
-    constructor (private httpClient: HttpClient, private router: Router) {
+    constructor(private httpClient: HttpClient, private router: Router) {
         // Validate if a the user is loggedIn when the page is refresh
         if (this.isAuthenticated()) {
             const token = AuthService.getToken();
-            const { user } = this.jwtHelper.decodeToken(token);
+            const {user} = this.jwtHelper.decodeToken(token);
             console.log('decoded user', user);
             this.currentUser = user;
         } else {
@@ -28,12 +28,12 @@ export class AuthService {
     }
 
     /** Helper method to retrieve token from localStorage **/
-    static getToken () {
+    static getToken() {
         return localStorage.getItem('jwt_token');
     }
 
     /** Helper method to validate token status and expiration **/
-    isAuthenticated (): boolean {
+    isAuthenticated(): boolean {
         const token = AuthService.getToken();
         if (!token) {
             return false;
@@ -43,8 +43,8 @@ export class AuthService {
         return moment().isBefore(expiresIn);
     }
 
-    login (email: string, password: string) {
-        return this.httpClient.post(`/api/auth`, { email, password })
+    login(email: string, password: string) {
+        return this.httpClient.post(`/api/auth`, {email, password})
             .pipe(tap(
                 authResults => {
                     this.setSession(authResults);
@@ -56,7 +56,7 @@ export class AuthService {
             );
     }
 
-    logout () {
+    logout() {
         this.currentUser = null;
         localStorage.removeItem('jwt_token');
         this.router.navigate(['/users/login']);
@@ -66,11 +66,11 @@ export class AuthService {
      * Helper function to extract and set the user & token from an auth request
      * @param authResults - The result from an auth request signIn/register
      */
-    private setSession (authResults) {
+    private setSession(authResults) {
         console.log('Setting session');
-        const { data } = authResults;
-        const { token } = data;
-        const { user } = this.jwtHelper.decodeToken(token);
+        const {data} = authResults;
+        const {token} = data;
+        const {user} = this.jwtHelper.decodeToken(token);
         this.currentUser = user;
         localStorage.setItem('jwt_token', token);
     }
