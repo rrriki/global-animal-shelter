@@ -5,7 +5,6 @@ import * as _ from 'lodash';
 import {Pet} from '../typing/pet.interface';
 import {CreatePetDTO} from '../typing/dto/createPet.dto';
 import {logPerformance} from '../shared/log-performance.decorator';
-import {Configuration} from '../configuration';
 
 @Injectable()
 export class PetService {
@@ -13,14 +12,7 @@ export class PetService {
 
     @logPerformance()
     async createPet(pet: CreatePetDTO, files: any[]): Promise<Pet> {
-
-        // https://devcenter.heroku.com/articles/s3
-        const photos = _.map(files, (file) => {
-            const url = file.path;
-            const lastIndex = url.lastIndexOf(Configuration.PUBLIC_FOLDER);
-            return url.substr(lastIndex + Configuration.PUBLIC_FOLDER.length);
-        });
-
+        const photos = _.map(files, (file) => file.location);
         const newPet = await new this.petModel({...pet, photos});
         return await newPet.save();
     }

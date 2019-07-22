@@ -13,14 +13,13 @@ import {PetDetailResolver} from './pet-detail/pet-detail.resolver';
 import {petRoutes} from './pet.routes';
 import {environment} from '../../environments/environment';
 
-
 @NgModule({
     imports: [
         CommonModule,
         ReactiveFormsModule,
         FontAwesomeModule,
         RouterModule.forChild(petRoutes),
-        AgmCoreModule.forRoot({apiKey: environment.googleMapsKey, libraries: ['places']})
+        AgmCoreModule.forRoot({apiKey: environment.google_maps_key, libraries: ['places']}),
     ],
     declarations: [
         CreatePetComponent,

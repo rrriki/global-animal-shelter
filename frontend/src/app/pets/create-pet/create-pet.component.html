@@ -3,40 +3,44 @@
     <form [formGroup]="newPetForm" (ngSubmit)="savePet(newPetForm.value)" autocomplete="off" novalidate>
 
         <div class="form-group">
-            <label for="name" class="font-weight-bold">Name:</label>
-            <input formControlName="name" id="name" type="text" name="name" placeholder="Pets name"
-                   class="form-control">
+            <label class="font-weight-bold" for="name">Name:</label>
+            <em *ngIf="newPetForm.controls.name?.invalid && (newPetForm.controls.name?.touched || isMouseOverSubmit)">Required!</em>
+            <input class="form-control" id="name" formControlName="name" type="text" name="name"
+                   placeholder="Pet's name">
         </div>
 
-        <div class="form-group">
-            <div class="col">
-                <label for="type" class="font-weight-bold">Pet Type:</label>
-                <select formControlName="type" id="type" name="type">
-                    <option value="Dog"></option>
-                    <option value="Cat"></option>
-                    <option value="Other"></option>
+        <div class="form-row">
+            <div class="form-group col">
+                <label class="font-weight-bold" for="type">Type:</label>
+                <em *ngIf="newPetForm.controls.type?.invalid && (newPetForm.controls.type?.touched || isMouseOverSubmit)">Required!</em>
+                <select class="form-control" id="type" formControlName="type" name="type">
+                    <option value="dog" selected>Dog</option>
+                    <option value="cat">Cat</option>
+                    <option value="other">Other</option>
                 </select>
             </div>
 
-            <div class="col">
-                <label for="breed" class="font-weight-bold">Breed:</label>
-                <input formControlName="breed" id="breed" type="text" name="breed" placeholder="Pets breed"
-                       class="form-control">
+            <div class="form-group col">
+                <label class="font-weight-bold" for="type">Breed:</label>
+                <em *ngIf="newPetForm.controls.breed?.invalid && (newPetForm.controls.breed?.touched || isMouseOverSubmit)">Required!</em>
+                <input class="form-control" type="text" id="breed" placeholder="Pet's breed" formControlName="breed">
             </div>
+
         </div>
 
         <div class="form-group">
-            <label for="description" class="font-weight-bold">Description:</label>
-            <textarea formControlName="description" class="form-control" id="description"
-                      placeholder="Give some details about it">
+            <label class="font-weight-bold" for="description">Description:</label>
+            <em *ngIf="newPetForm.controls.description?.invalid && (newPetForm.controls.description?.touched || isMouseOverSubmit)">Required!</em>
+            <textarea class="form-control" id="description" formControlName="description"
+                      placeholder="Give some more details about it">
             </textarea>
         </div>
 
         <div class="form-group">
-            <label for="location" class="font-weight-bold">Location:</label>
-            <input #location id="location" type="text" name="location"
-                   placeholder="Where did you last saw it?"
-                   class="form-control" autocapitalize="off">
+            <label class="font-weight-bold" for="location">Location:</label>
+            <em *ngIf="newPetForm.controls.location?.invalid && (newPetForm.controls.location?.touched || isMouseOverSubmit)">Required!</em>
+            <input #location class="form-control" id="location" type="text" name="location"
+                   placeholder="Where did you last saw it?" autocapitalize="off">
 
             <div class="my-3">
                 <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom">
@@ -46,28 +50,27 @@
         </div>
 
         <div class="form-group">
-            <p class="font-weight-bold">Photo:</p>
+            <label class="font-weight-bold">Photos:</label>
+            <em *ngIf="newPetForm.controls.photos?.invalid && (newPetForm.controls.photos?.touched || isMouseOverSubmit)">Required!</em>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Upload</span>
                 </div>
                 <div class="custom-file">
-                    <label class="custom-file-label" for="photo">Add one or more files</label>
+                    <label class="custom-file-label" for="photo">Add one or more photos</label>
                     <input type="file" class="custom-file-input" id="photo" accept="image/*"
                            multiple (change)="onPhotoInputChange($event)">
                 </div>
             </div>
-
         </div>
 
-        <div *ngIf="images.length > 0">
+        <div *ngIf="photos.length > 0">
             <ul class="list-group flex-row thumbnails">
-                <li *ngFor="let image of images; let i=index" class="list-group-item">
-
+                <li class="list-group-item" *ngFor="let photo of photos; let i=index">
                     <div class="card thumbnail">
                         <fa-icon class="float-right" [icon]="faTimes" (click)="onRemovePhoto(i)"></fa-icon>
                         <div class="card-body">
-                            <img src="{{image.url}}" class="rounded" alt="{{image.name}}"/>
+                            <img class="rounded" src="{{photo.url}}" alt="{{photo.name}}"/>
                         </div>
                     </div>
 
@@ -76,8 +79,11 @@
         </div>
 
         <div class="text-center my-3">
-            <button type="submit" [disabled]="newPetForm.invalid" class="btn btn-primary mx-1">Save</button>
-            <button type="button" class="btn btn-secondary m-1" (click)="cancel()">Cancel</button>
+            <!-- Disabled buttons don't emit events, so wrap it around span -->
+            <span (mouseover)="isMouseOverSubmit = true" (mouseleave)="isMouseOverSubmit=false">
+            <button class="btn btn-primary mx-1" type="submit" [disabled]="newPetForm.invalid">Save</button>
+            </span>
+            <button class="btn btn-secondary m-1" type="button" (click)="cancel()">Cancel</button>
         </div>
     </form>
 

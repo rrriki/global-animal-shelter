@@ -6,14 +6,12 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 
 @NgModule({
     imports: [
-        CommonModule
+        CommonModule,
     ],
     declarations: [],
     providers: [],
 })
-
 export class AuthModule {
-
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: AuthModule,

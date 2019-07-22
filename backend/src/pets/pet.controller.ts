@@ -20,7 +20,6 @@ import {PetService} from './pet.service';
 import {Pet} from '../typing/pet.interface';
 import {CreatePetDTO} from '../typing/dto/createPet.dto';
 import {FindByIdDTO} from '../typing/dto/findById.dto';
-import {file} from '@babel/types';
 
 @ApiUseTags('pets')
 @Controller('pets')
@@ -32,12 +31,11 @@ export class PetController {
     @UseGuards(AuthGuard())
     @ApiResponse({status: HttpStatus.OK, description: 'Pet has been successfully created'})
     @ApiResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating Pet'})
-    @UseInterceptors(FilesInterceptor('files'))
-    public async createPet(@Response() res, @UploadedFiles() files, @Body() pet: CreatePetDTO, @Headers() headers): Promise<Pet> {
-        // https://github.com/nestjs/nest/issues/1169
+    @UseInterceptors(FilesInterceptor('photos'))
+    public async createPet(@Response() res, @UploadedFiles() files: any[], @Body() pet: CreatePetDTO, @Headers() headers): Promise<Pet> {
         try {
             const newPet = await this.petService.createPet(pet, files);
-            return res.status(HttpStatus.OK).json();
+            return res.status(HttpStatus.OK).json(newPet);
         } catch (e) {
             throw new HttpException(e.message, e.code);
         }

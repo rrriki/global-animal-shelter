@@ -1,10 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 import * as moment from 'moment';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {tap} from 'rxjs/operators';
 import {User} from '../typing/user.interface';
-import {Router} from '@angular/router';
+import {environment} from '../../environments/environment';
+
+const {api_url} = environment;
 
 @Injectable({
     providedIn: 'root'
@@ -44,7 +47,7 @@ export class AuthService {
     }
 
     login(email: string, password: string) {
-        return this.httpClient.post(`/api/auth`, {email, password})
+        return this.httpClient.post(`${api_url}/auth`, {email, password})
             .pipe(tap(
                 authResults => {
                     this.setSession(authResults);

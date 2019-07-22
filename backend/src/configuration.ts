@@ -1,9 +1,4 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 export class Configuration {
-
-    static PUBLIC_FOLDER = 'public';
 
     static getPort(): number {
         return +process.env.PORT;
@@ -28,18 +23,11 @@ export class Configuration {
         };
     }
 
-    static getPublicUploadsDirectory(folder?: string): string {
-
-        let uploadPath = path.join(__dirname, '..', Configuration.PUBLIC_FOLDER);
-
-        if (folder) {
-            uploadPath = path.join(uploadPath, folder);
-        }
-
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, {recursive: true}); // Node V. >= 10.12
-        }
-
-        return uploadPath;
+    static getAWSCredentials() {
+        return {
+            accessKeyId: process.env.AWS_KEY,
+            secretAccessKey: process.env.AWS_SECRET,
+            region: process.env.AWS_REGION,
+        };
     }
 }

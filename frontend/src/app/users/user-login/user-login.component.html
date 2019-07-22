@@ -5,7 +5,7 @@
         <form #loginForm="ngForm" (ngSubmit)="login(loginForm.value)" autocomplete="off">
             <div class="form-group">
                 <label for="email">Email:</label>
-                <em *ngIf="loginForm.controls.email?.invalid && (loginForm.controls.email?.touched || isMouseOverLogin)">Required!</em>
+                <em *ngIf="loginForm.controls.email?.invalid && (loginForm.controls.email?.touched || isMouseOverSubmit)">Required!</em>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <fa-icon class="input-group-text" [icon]="faUser"></fa-icon>
@@ -18,7 +18,7 @@
 
             <div class="form-group">
                 <label for="password">Password:</label>
-                <em *ngIf="loginForm.controls.password?.invalid && (loginForm.controls.password?.touched || isMouseOverLogin)">Required!</em>
+                <em *ngIf="loginForm.controls.password?.invalid && (loginForm.controls.password?.touched || isMouseOverSubmit)">Required!</em>
 
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -31,7 +31,7 @@
             </div>
             <div class="text-center">
                 <!-- Disabled buttons don't emit events, so wrap it around span -->
-                <span (mouseover)="isMouseOverLogin = true" (mouseleave)="isMouseOverLogin=false">
+                <span (mouseover)="isMouseOverSubmit = true" (mouseleave)="isMouseOverSubmit=false">
                 <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary mx-1">Login</button>
                 </span>
                 <button type="button" (click)="cancel()" class="btn btn-secondary mx-1">Cancel</button>

@@ -1,12 +1,11 @@
 import {NestFactory} from '@nestjs/core';
+import {NestExpressApplication} from '@nestjs/platform-express';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {AppModule} from './app.module';
 import {Configuration} from './configuration';
 import {Logger} from '@nestjs/common';
 import {HttpExceptionFilter} from './shared/http-exception.filter';
 import {ValidationPipe} from './shared/validation.pipe';
-import {NestExpressApplication} from '@nestjs/platform-express';
-import {join} from 'path';
 
 async function bootstrap() {
     const logger = new Logger('Main');
@@ -29,10 +28,8 @@ async function bootstrap() {
     // Add custom HTTP exception filter
     app.useGlobalFilters(new HttpExceptionFilter());
 
+    // Enable Cross-Origin requests
     app.enableCors();
-
-    // Serve static content
-    app.useStaticAssets(Configuration.getPublicUploadsDirectory());
 
     await app.listen(port);
     logger.log(`Server listening on port: ${port}`);

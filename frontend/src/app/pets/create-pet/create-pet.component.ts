@@ -6,7 +6,8 @@ import {Location} from '../../typing/location.interface';
 import PlaceResult = google.maps.places.PlaceResult;
 import {PetService} from '../pet.service';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
-
+import {FormValidators} from '../../shared/form-validators';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
     selector: 'app-create-pet',
@@ -15,14 +16,16 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 })
 export class CreatePetComponent implements OnInit {
     faTimes = faTimes;
+    isMouseOverSubmit = false;
+
     newPetForm: FormGroup;
     isLost: boolean;
-    images: Array<{name: string, url: string}> = [];
+    photos: Array<{name: string, url: string}> = [];
+
     // Initial coordinates for the map
     latitude = 37.4219999;
     longitude = -122.08405749999997;
     zoom = 13;
-
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -31,6 +34,7 @@ export class CreatePetComponent implements OnInit {
         private mapsAPILoader: MapsAPILoader,
         private ngZone: NgZone,
         private petService: PetService,
+        private toastr: ToastrService,
     ) {
 
         activatedRoute.data.subscribe((data) => {
@@ -43,58 +47,17 @@ export class CreatePetComponent implements OnInit {
     public locationSearchRef: ElementRef;
 
     async ngOnInit(): Promise<void> {
-
         this.newPetForm = this.formBuilder.group({
             name: ['', Validators.required],
             description: ['', [Validators.required, Validators.minLength(1)]],
+            type: ['dog', [Validators.required]],
+            breed: [''],
             location: ['', Validators.required],
-            files: this.formBuilder.array([], Validators.minLength(1))
+            photos: this.formBuilder.array([], FormValidators.nonEmpty)
         });
 
         this.setCurrentPosition();
         await this.setPlacesAutoComplete();
-    }
-
-    /**
-     * Event handler for the Photos Input
-     * @param event - Input change event, with new files
-     */
-    onPhotoInputChange(event) {
-        const {files} = event.target;
-
-        if (files.length === 0) {
-            return;
-        }
-
-        const filesControl = this.newPetForm.get('files') as FormArray;
-
-        for (const file of files) {
-            const {name, type} = file;
-
-            if (type.match(/image\/*/) == null) {
-                alert('Only images are supported!');
-                continue;
-            }
-
-            filesControl.push(new FormControl(file));
-
-            // Show preview
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                this.images.push({name, url: reader.result.toString()});
-            };
-        }
-    }
-
-    /**
-     * Click handler for the remove photo button
-     * @param index - The index of the photo to remove
-     */
-    onRemovePhoto(index: number): void {
-        this.images.splice(index, 1);
-        const filesControl = this.newPetForm.get('files') as FormArray;
-        filesControl.removeAt(index);
     }
 
     /**
@@ -124,10 +87,9 @@ export class CreatePetComponent implements OnInit {
                 const place = autoComplete.getPlace();
 
                 // Verify that result contains coordinates
-                if (place.geometry === undefined || place.geometry === null) {
+                if (!place.geometry) {
                     return;
                 }
-
                 // Extract location info
                 const location = this.extractLocation(place);
                 this.newPetForm.patchValue({'location': JSON.stringify(location)});
@@ -166,16 +128,56 @@ export class CreatePetComponent implements OnInit {
         return location;
     }
 
+    /**
+     * Event handler for the Photos Input
+     * @param event - Input change event, with new files
+     */
+    onPhotoInputChange(event) {
+        const {files} = event.target;
+
+        if (files.length === 0) {
+            return;
+        }
+
+        const filesControl = this.newPetForm.get('photos') as FormArray;
+
+        for (const file of files) {
+            const {name, type} = file;
+
+            if (type.match(/image\/*/) == null) {
+                alert('Only images are supported!');
+                continue;
+            }
+
+            filesControl.push(new FormControl(file));
+
+            // Show preview
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.photos.push({name, url: reader.result.toString()});
+            };
+        }
+    }
+
+    /**
+     * Click handler for the remove photo button
+     * @param index - The index of the photo to remove
+     */
+    onRemovePhoto(index: number): void {
+        this.photos.splice(index, 1);
+        const filesControl = this.newPetForm.get('photos') as FormArray;
+        filesControl.removeAt(index);
+    }
 
     savePet(formValues: object): void {
-        console.log(formValues);
         const data = new FormData();
 
         data.append('isLost', String(this.isLost));
 
         const fields = Object.keys(formValues);
         for (const field of fields) {
-            if (field === 'files') {
+            if (field === 'photos') {
                 const files: File[] = formValues[field];
                 files.forEach((file) => {data.append(field, file, file.name); });
             } else {
@@ -183,8 +185,9 @@ export class CreatePetComponent implements OnInit {
             }
         }
 
-        this.petService.createPet(data).subscribe((res) => {
-            console.log('response', res);
+        this.petService.createPet(data).subscribe(async (res) => {
+            this.toastr.success('Pet successfully added', 'Thank you!');
+            await this.router.navigate(['/pets']);
         });
     }
 

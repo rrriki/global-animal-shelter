@@ -5,7 +5,7 @@ export const PetSchema = new mongoose.Schema({
     type: {type: String, required: true},
     breed: {type: String},
     description: {type: String, required: true},
-    photos: [{type: String}],
+    photos: [{type: String, required: true}],
     isLost: {type: Boolean, required: true},
     isDeleted: {type: Boolean, default: false},
 }, {versionKey: false});

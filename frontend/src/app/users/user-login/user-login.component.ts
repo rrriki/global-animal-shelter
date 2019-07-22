@@ -17,7 +17,7 @@ export class UserLoginComponent {
 
     email: string;
     password: string;
-    isMouseOverLogin: boolean;
+    isMouseOverSubmit: boolean;
 
     constructor(private router: Router, private auth: AuthService) { }
 
