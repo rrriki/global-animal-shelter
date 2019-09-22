@@ -11,7 +11,7 @@ export class FormValidators {
         return null;
     }
 
-    static restrictedWordsValidator(words) {
+    static restrictedWords(words: string[]) {
         return (control: FormControl): object => {
             if (!words) {
                 return null;

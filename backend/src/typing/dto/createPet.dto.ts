@@ -23,8 +23,3 @@ export class CreatePetDTO {
     @IsBooleanString()
     isLost: boolean;
 }
-
-export class createPetPhotosDTO{
-
-
-}

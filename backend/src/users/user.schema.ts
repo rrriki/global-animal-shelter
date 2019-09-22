@@ -10,6 +10,7 @@ export const UserSchema = new mongoose.Schema({
     lastName: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
+    profilePhoto: {type: String, required: true},
 }, {versionKey: false});
 
 // Hash password with bcrypt before saving

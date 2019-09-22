@@ -1,6 +1,5 @@
 import {
     Controller,
-    Headers,
     Body,
     Param,
     Response,
@@ -32,7 +31,7 @@ export class PetController {
     @ApiResponse({status: HttpStatus.OK, description: 'Pet has been successfully created'})
     @ApiResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating Pet'})
     @UseInterceptors(FilesInterceptor('photos'))
-    public async createPet(@Response() res, @UploadedFiles() files: any[], @Body() pet: CreatePetDTO, @Headers() headers): Promise<Pet> {
+    public async createPet(@Response() res, @UploadedFiles() files: any[], @Body() pet: CreatePetDTO): Promise<Pet> {
         try {
             const newPet = await this.petService.createPet(pet, files);
             return res.status(HttpStatus.OK).json(newPet);
