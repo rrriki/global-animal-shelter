@@ -1,37 +1,35 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {faFacebook} from '@fortawesome/free-brands-svg-icons';
 import {faUser, faLock} from '@fortawesome/free-solid-svg-icons';
 import {AuthService} from '../../auth/auth.service';
 
 @Component({
-    selector: 'app-user-login',
-    templateUrl: './user-login.component.html',
-    styleUrls: ['./user-login.component.css']
+  selector: 'app-user-login',
+  templateUrl: './user-login.component.html',
+  styleUrls: ['./user-login.component.css']
 })
 export class UserLoginComponent {
 
-    faUser = faUser;
-    faLock = faLock;
-    faFacebook = faFacebook;
+  faUser = faUser;
+  faLock = faLock;
 
-    email: string;
-    password: string;
-    isMouseOverSubmit: boolean;
+  email: string;
+  password: string;
+  isMouseOverSubmit: boolean;
 
-    constructor(private router: Router, private auth: AuthService) { }
+  constructor(private router: Router, private auth: AuthService) { }
 
-    login(formValues) {
-        this.auth.login(formValues.email, formValues.password)
-            .subscribe(
-                () => {
-                    console.log('User is logged in:', this.auth.currentUser);
-                }
-            );
-    }
+  login(formValues) {
+    this.auth.login(formValues.email, formValues.password)
+      .subscribe(
+        () => {
+          console.log('User is logged in:', this.auth.currentUser);
+        }
+      );
+  }
 
-    cancel() {
-        this.router.navigate(['/pets']);
-    }
+  async cancel() {
+    await this.router.navigate(['/home']);
+  }
 
 }

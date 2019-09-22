@@ -1,26 +1,34 @@
-<!-- https://www.petfinder.com -->
-
 <div class="card-deck">
 
-    <div class="col-md-4 mb-4" *ngFor="let pet of petList">
-
-        <div class="card h-100">
-            <div class="card-header text-center">{{pet.isLost ? "LOST" : "FOUND"}}</div>
-
-            <!--TODO: https://getbootstrap.com/docs/4.0/components/carousel/ -->
-            <img *ngIf="pet.photos.length > 0" class="card-img-top" src="{{pet.photos[0]}}"
-                 alt="{{pet.description}}">
-            <div class="card-body">
-                <h5 class="card-title">{{pet.name}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{pet.type}}</h6>
-                <p class="card-text text-truncate">{{pet.description}}</p>
-            </div>
-            <div class="card-footer text-center">
-                <a [routerLink]="['/pets/'+pet.id]" class="card-link">View Details</a>
-                <a href="#" class="card-link">Follow</a>
-            </div>
-        </div>
+  <div class="card h-25" *ngIf="petList.length == 0">
+    <div class=" text-center h-100 m-5">
+      <img class="mt-5" src="/assets/images/puppy.gif">
+      <div class="card-img-overlay">
+        <h1 class="card-title">Good news!</h1>
+        <p class="card-text">No lost pets to display.</p>
+      </div>
     </div>
+  </div>
+
+  <div class="col-md-4 mb-4" *ngFor="let pet of petList">
+
+    <div class="card h-100">
+      <div class="card-header text-center">{{pet.isLost ? "LOST" : "FOUND"}}</div>
+
+      <!--TODO: https://getbootstrap.com/docs/4.0/components/carousel/ -->
+      <img *ngIf="pet.photos.length > 0" class="card-img-top" src="{{pet.photos[0]}}"
+           alt="{{pet.description}}">
+      <div class="card-body">
+        <h5 class="card-title">{{pet.name}}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{pet.type}}</h6>
+        <p class="card-text text-truncate">{{pet.description}}</p>
+      </div>
+      <div class="card-footer text-center">
+        <a [routerLink]="['/pets/'+pet.id]" class="card-link">View Details</a>
+        <a href="#" class="card-link">Follow</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 

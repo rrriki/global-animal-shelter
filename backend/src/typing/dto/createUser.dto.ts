@@ -9,7 +9,7 @@ export class CreateUserDTO {
 
     @ApiModelProperty()
     @IsNotEmpty()
-    @Length(8)
+    @Length(8, 20)
     password: string;
 
     @ApiModelProperty()

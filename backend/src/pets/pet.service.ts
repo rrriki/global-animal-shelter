@@ -19,21 +19,21 @@ export class PetService {
 
     @logPerformance((instance, params) => params[0])
     async updatePetById(id: string, pet: CreatePetDTO): Promise<Pet> {
-        return await this.petModel.findOneAndUpdate({_id: id}, pet, {new: true});
+        return this.petModel.findOneAndUpdate({_id: id}, pet, {new: true});
     }
 
     @logPerformance((instance, params) => params[0])
     async findPetById(id: string): Promise<Pet> {
-        return await this.petModel.findById(id);
+        return this.petModel.findById(id);
     }
 
     @logPerformance()
     async findAllPets(): Promise<Pet[]> {
-        return await this.petModel.find({isDeleted: false});
+        return this.petModel.find({isDeleted: false});
     }
 
     @logPerformance((instance, params) => params[0])
     async deletePetById(id: string): Promise<Pet> {
-        return await this.petModel.findOneAndUpdate({_id: id}, {isDeleted: true}, {new: true});
+        return this.petModel.findOneAndUpdate({_id: id}, {isDeleted: true}, {new: true});
     }
 }

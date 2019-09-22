@@ -10,14 +10,13 @@ export class UserService {
     constructor(@InjectModel('User') private userModel: Model<User>) { }
 
     @logPerformance((instance, args) => args[0].email)
-    async createUser(user: CreateUserDTO): Promise<User> {
-        const newUser = await new this.userModel(user);
-        return await newUser.save();
-
+    async createUser(user: CreateUserDTO, profilePhoto: any): Promise<User> {
+        const newUser = await new this.userModel({...user, profilePhoto: profilePhoto.location});
+        return newUser.save();
     }
 
     @logPerformance((instance, args) => args[0])
     async findUserByEmail(email: string): Promise<any> {
-        return await this.userModel.findOne({email});
+        return this.userModel.findOne({email});
     }
 }

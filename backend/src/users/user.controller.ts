@@ -5,7 +5,7 @@ import {
     Get,
     Response,
     HttpStatus,
-    Param, HttpException,
+    Param, HttpException, UseInterceptors, UploadedFile,
 } from '@nestjs/common';
 import {ApiResponse} from '@nestjs/swagger';
 import {ApiUseTags} from '@nestjs/swagger';
@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import {CreateUserDTO} from '../typing/dto/createUser.dto';
 import {UserService} from './user.service';
 import {FindByEmailDTO} from '../typing/dto/findByEmail.dto';
+import {FileInterceptor} from '@nestjs/platform-express';
 
 @ApiUseTags('Users')
 @Controller('users')
@@ -23,9 +24,10 @@ export class UserController {
     @Post()
     @ApiResponse({status: HttpStatus.OK, description: 'User created successfully'})
     @ApiResponse({status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Error creating user'})
-    async createUser(@Response() res, @Body() user: CreateUserDTO) {
+    @UseInterceptors(FileInterceptor('profilePhoto'))
+    async createUser(@Response() res, @UploadedFile() profilePhoto, @Body() user: CreateUserDTO) {
         try {
-            const newUser = await this.userService.createUser(user);
+            const newUser = await this.userService.createUser(user, profilePhoto);
             return res.status(HttpStatus.OK).json(newUser);
         } catch (e) {
             if (e.code === 11000) {
