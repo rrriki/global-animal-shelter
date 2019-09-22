@@ -40,14 +40,14 @@ export class Configuration {
             s3: new AWS.S3({credentials: Configuration.getAWSCredentials()}),
             bucket: 'global-animal-shelter',
             key: (req, file, cb) => {
-                const {email} = (req as any).body;
+                const id = req.body.email || req.user.id ;
                 const ext = path.extname(file.originalname);
 
                 if (ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
                     return cb(new BadRequestException('Only images are allowed'));
                 }
 
-                cb(null, `${folder}/${email}/${Date.now()}-${file.originalname}`);
+                cb(null, `${folder}/${id}/${Date.now()}-${file.originalname}`);
             },
             acl: 'public-read',
         };
